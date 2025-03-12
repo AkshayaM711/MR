@@ -53,7 +53,7 @@ if st.button("Get Recommendations"):
         st.subheader("Recommended Song:")
         for text in recommendations:
             st.write(f"- {text}")
-   else:
+    else:
         # **Ensure session state index does not exceed list length**
         fallback_song = fallback_songs[st.session_state.fallback_index % len(fallback_songs)]
         st.session_state.fallback_index += 1  # Move to the next song
