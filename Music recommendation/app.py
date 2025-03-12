@@ -20,7 +20,8 @@ fallback_songs = [
     "Hotel California",
     "Smells Like Teen Spirit"
 ]
-fallback_counter = 0  # Counter to track fallback songs
+if "fallback_index" not in st.session_state:
+    st.session_state.fallback_index = 0
 
 
 
@@ -52,8 +53,10 @@ if st.button("Get Recommendations"):
         st.subheader("Recommended Song:")
         for text in recommendations:
             st.write(f"- {text}")
-    else:
-         # Cycle through fallback songs
-        fallback_song = fallback_songs[st.session_state.fallback_index]
-        st.session_state.fallback_index = (st.session_state.fallback_index + 1) % len(fallback_songs)  # Move to next song
+   else:
+        # **Ensure session state index does not exceed list length**
+        fallback_song = fallback_songs[st.session_state.fallback_index % len(fallback_songs)]
+        st.session_state.fallback_index += 1  # Move to the next song
+
+        # **Display only the fallback song name (no warning)**
         st.subheader(f"🎵 {fallback_song}")
