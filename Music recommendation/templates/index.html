@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Recommendation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Music Recommendation System</h1>
+    
+    <form id="recommendForm">
+        <label for="genre">Select Genre:</label>
+        <select id="genre" name="genre">
+            <option value="">--Select Genre--</option>
+        </select>
+
+        <label for="energy">Select Energy Level:</label>
+        <select id="energy" name="energy">
+            <option value="">--Select Energy--</option>
+        </select>
+
+        <label for="danceability">Select Danceability:</label>
+        <select id="danceability" name="danceability">
+            <option value="">--Select Danceability--</option>
+        </select>
+
+        <button type="submit">Get Recommendations</button>
+    </form>
+
+    <h2>Recommended User Text:</h2>
+    <div id="recommendations"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("/get_dropdowns")
+            .then(response => response.json())
+            .then(data => {
+                populateDropdown("genre", data.genres);
+                populateDropdown("energy", data.energy_levels);
+                populateDropdown("danceability", data.danceability_levels);
+            });
+
+            function populateDropdown(id, values) {
+                let dropdown = document.getElementById(id);
+                values.forEach(value => {
+                    let option = document.createElement("option");
+                    option.text = value;
+                    option.value = value;
+                    dropdown.add(option);
+                });
+            }
+
+            document.getElementById("recommendForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+                let genre = document.getElementById("genre").value;
+                let energy = document.getElementById("energy").value;
+                let danceability = document.getElementById("danceability").value;
+
+                fetch("/recommend", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ genre: genre, energy: energy, danceability: danceability })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    let recDiv = document.getElementById("recommendations");
+                    recDiv.innerHTML = "<ul>" + data.recommendations.map(text =>
+                        `<li>${text}</li>`
+                    ).join("") + "</ul>";
+                });
+            });
+        });
+    </script>
+</body>
+</html>
