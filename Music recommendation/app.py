@@ -53,6 +53,7 @@ if st.button("Get Recommendations"):
         for text in recommendations:
             st.write(f"- {text}")
     else:
-        # Display only a fallback song name without a warning box
-        fallback_song = fallback_songs[len(recommendations) % len(fallback_songs)]
+         # Cycle through fallback songs
+        fallback_song = fallback_songs[st.session_state.fallback_index]
+        st.session_state.fallback_index = (st.session_state.fallback_index + 1) % len(fallback_songs)  # Move to next song
         st.subheader(f"🎵 {fallback_song}")
